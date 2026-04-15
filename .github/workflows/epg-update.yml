@@ -7,9 +7,9 @@
 #      (e.g. https://epg.mybunny.tv/ipt/XXXXX/YYYYY/Default)
 #   4. Add secret: M3U_URL = your M3U playlist URL (optional, only for suggest-mappings)
 #   5. The action runs daily at 06:00 UTC (and on manual trigger)
-#   6. TiviMate EPG URLs:
-#      Starlite: https://raw.githubusercontent.com/YOURUSER/YOURREPO/main/output/starlite.xml
-#      MyBunny:  https://raw.githubusercontent.com/YOURUSER/YOURREPO/main/output/mybunny.xml
+#   6. TiviMate EPG URLs (use either .xml or .xml.gz):
+#      Starlite: https://raw.githubusercontent.com/Jr595j/EPG/main/output/starlite.xml.gz
+#      MyBunny:  https://raw.githubusercontent.com/Jr595j/EPG/main/output/mybunny.xml.gz
 
 name: Update EPG
 
@@ -54,11 +54,15 @@ jobs:
       - name: Fetch and merge EPG (MyBunny)
         run: python fetcher.py --config config_mybunny.json
 
-      - name: Copy outputs to /output for clean URLs
+      - name: Copy outputs and create compressed versions
         run: |
           mkdir -p output
           cp cache/merged.xml output/starlite.xml
+          gzip -9 -k output/starlite.xml
           cp cache_mybunny/merged.xml output/mybunny.xml
+          gzip -9 -k output/mybunny.xml
+          echo "=== Output files ==="
+          ls -lh output/
 
       - name: Commit updated EPG
         run: |
