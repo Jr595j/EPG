@@ -1,0 +1,69 @@
+# Example GitHub Actions workflow — run the fetcher daily and commit the result.
+# 
+# SETUP:
+#   1. Create a GitHub repo and push this project
+#   2. Go to repo Settings → Secrets and variables → Actions → New repository secret
+#   3. Add secret: MYBUNNY_EPG_URL = your full MyBunny EPG URL
+#      (e.g. https://epg.mybunny.tv/ipt/XXXXX/YYYYY/Default)
+#   4. Add secret: M3U_URL = your M3U playlist URL (optional, only for suggest-mappings)
+#   5. The action runs daily at 06:00 UTC (and on manual trigger)
+#   6. TiviMate EPG URLs:
+#      Starlite: https://raw.githubusercontent.com/YOURUSER/YOURREPO/main/output/starlite.xml
+#      MyBunny:  https://raw.githubusercontent.com/YOURUSER/YOURREPO/main/output/mybunny.xml
+
+name: Update EPG
+
+on:
+  schedule:
+    # Run daily at 06:00 UTC — adjust to your preference
+    - cron: '0 6 * * *'
+  workflow_dispatch:  # Allow manual trigger from GitHub UI
+
+jobs:
+  update-epg:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Patch MyBunny URL into config (from secret)
+        if: env.MYBUNNY_EPG_URL != ''
+        env:
+          MYBUNNY_EPG_URL: ${{ secrets.MYBUNNY_EPG_URL }}
+        run: |
+          python -c "
+          import json
+          for cfg in ['config.json', 'config_mybunny.json']:
+              with open(cfg) as f: data = json.load(f)
+              for s in data.get('sources', []):
+                  if 'mybunny' in s.get('url', '').lower() or 'mybunny' in s.get('name', '').lower():
+                      import os
+                      s['url'] = os.environ['MYBUNNY_EPG_URL']
+              with open(cfg, 'w') as f: json.dump(data, f, indent=2)
+          "
+
+      - name: Fetch and merge EPG (Starlite)
+        run: python fetcher.py --config config.json
+
+      - name: Fetch and merge EPG (MyBunny)
+        run: python fetcher.py --config config_mybunny.json
+
+      - name: Copy outputs to /output for clean URLs
+        run: |
+          mkdir -p output
+          cp cache/merged.xml output/starlite.xml
+          cp cache_mybunny/merged.xml output/mybunny.xml
+
+      - name: Commit updated EPG
+        run: |
+          git config user.name "EPG Bot"
+          git config user.email "epg-bot@users.noreply.github.com"
+          git add output/
+          git diff --cached --quiet || git commit -m "Update EPG $(date -u +%Y-%m-%d)"
+          git push

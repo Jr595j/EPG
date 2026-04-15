@@ -1,0 +1,128 @@
+{
+  "port": 8081,
+  "instance_name": "EPG Aggregator — MyBunny",
+  "refresh_interval_hours": 12,
+  "keep_past_hours": 2,
+  "m3u_url": "",
+  "sources": [
+    {
+      "name": "MyBunny (master)",
+      "url": "https://epg.mybunny.tv/ipt/YOUR_ID/YOUR_KEY/Default",
+      "priority": 1,
+      "enabled": true,
+      "master": true
+    },
+    {
+      "name": "Starlite EPG (UTC)",
+      "url": "https://epg.starlite.best/utc.xml.gz",
+      "priority": 2,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - US (1/6)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Usa/usa1.xml",
+      "priority": 3,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - US (2/6)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Usa/usa2.xml",
+      "priority": 4,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - US (3/6)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Usa/usa3.xml",
+      "priority": 5,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - US (4/6)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Usa/usa4.xml",
+      "priority": 6,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - US (5/6)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Usa/usa5.xml",
+      "priority": 7,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - US (6/6)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Usa/usa6.xml",
+      "priority": 8,
+      "enabled": true
+    },
+    {
+      "name": "EPGShare01 - US General",
+      "url": "https://epgshare01.online/epgshare01/epg_ripper_US2.xml.gz",
+      "priority": 14,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "EPGShare01 - US Sports",
+      "url": "https://epgshare01.online/epgshare01/epg_ripper_US_SPORTS1.xml.gz",
+      "priority": 16,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "EPGShare01 - US Locals",
+      "url": "https://epgshare01.online/epgshare01/epg_ripper_US_LOCALS1.xml.gz",
+      "priority": 17,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "epg.pw - US",
+      "url": "https://epg.pw/xmltv/epg_US.xml.gz",
+      "priority": 22,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "Open-EPG - US (10)",
+      "url": "https://www.open-epg.com/files/unitedstates10.xml",
+      "priority": 25,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "Open-EPG - US (11)",
+      "url": "https://www.open-epg.com/files/unitedstates11.xml",
+      "priority": 26,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "Open-EPG - US (3)",
+      "url": "https://www.open-epg.com/files/unitedstates3.xml",
+      "priority": 27,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "IPTV-EPG.org - US",
+      "url": "https://iptv-epg.org/files/epg-us.xml",
+      "priority": 28,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    }
+  ],
+  "master_skip_programme_channels": [
+    "hbo.*.us",
+    "showtime.*.us",
+    "starz.*.us",
+    "cinemax.*.us",
+    "moremax.*.us",
+    "actionmax.*.us",
+    "themaxx.*.us",
+    "outerplex.*.us"
+  ],
+  "channel_map": {
+    "_comment": "Map EPG channel IDs → your M3U tvg-id values so TiviMate can match them.",
+    "_usage": "Format: 'channel-id-from-epg-xml': 'tvg-id-in-your-m3u'"
+  }
+}

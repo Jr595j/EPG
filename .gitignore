@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+cache/
+cache_mybunny/
+*.xlsx
+.env
+# Keep your local configs private — use config.local.json for personal URLs
+config.local.json
+config_mybunny.local.json

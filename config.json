@@ -1,0 +1,198 @@
+{
+  "port": 8080,
+  "instance_name": "EPG Aggregator — Starlite",
+  "refresh_interval_hours": 12,
+  "keep_past_hours": 2,
+  "m3u_url": "",
+  "sources": [
+    {
+      "name": "Starlite EPG (UTC)",
+      "url": "https://epg.starlite.best/utc.xml.gz",
+      "priority": 1,
+      "enabled": true,
+      "master": true
+    },
+    {
+      "name": "MyBunny (your provider)",
+      "url": "https://epg.mybunny.tv/ipt/YOUR_ID/YOUR_KEY/Default",
+      "priority": 2,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - US (1/6)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Usa/usa1.xml",
+      "priority": 3,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - US (2/6)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Usa/usa2.xml",
+      "priority": 4,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - US (3/6)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Usa/usa3.xml",
+      "priority": 5,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - US (4/6)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Usa/usa4.xml",
+      "priority": 6,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - US (5/6)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Usa/usa5.xml",
+      "priority": 7,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - US (6/6)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Usa/usa6.xml",
+      "priority": 8,
+      "enabled": true
+    },
+    {
+      "name": "GlobeTVApp - UK (1/5)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Unitedkingdom/unitedkingdom1.xml",
+      "priority": 9,
+      "enabled": false
+    },
+    {
+      "name": "GlobeTVApp - UK (2/5)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Unitedkingdom/unitedkingdom2.xml",
+      "priority": 10,
+      "enabled": false
+    },
+    {
+      "name": "GlobeTVApp - UK (3/5)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Unitedkingdom/unitedkingdom3.xml",
+      "priority": 11,
+      "enabled": false
+    },
+    {
+      "name": "GlobeTVApp - UK (4/5)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Unitedkingdom/unitedkingdom4.xml",
+      "priority": 12,
+      "enabled": false
+    },
+    {
+      "name": "GlobeTVApp - UK (5/5)",
+      "url": "https://raw.githubusercontent.com/globetvapp/epg/main/Unitedkingdom/unitedkingdom5.xml",
+      "priority": 13,
+      "enabled": false
+    },
+    {
+      "name": "EPGShare01 - US General",
+      "url": "https://epgshare01.online/epgshare01/epg_ripper_US2.xml.gz",
+      "priority": 14,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "EPGShare01 - UK",
+      "url": "https://epgshare01.online/epgshare01/epg_ripper_UK1.xml.gz",
+      "priority": 15,
+      "enabled": false
+    },
+    {
+      "name": "EPGShare01 - US Sports",
+      "url": "https://epgshare01.online/epgshare01/epg_ripper_US_SPORTS1.xml.gz",
+      "priority": 16,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "EPGShare01 - US Locals",
+      "url": "https://epgshare01.online/epgshare01/epg_ripper_US_LOCALS1.xml.gz",
+      "priority": 17,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "EPGShare01 - Canada",
+      "url": "https://epgshare01.online/epgshare01/epg_ripper_CA2.xml.gz",
+      "priority": 18,
+      "enabled": false
+    },
+    {
+      "name": "EPGTalk - US (backup, updates multiple times daily)",
+      "url": "https://raw.githubusercontent.com/acidjesuz/EPGTalk/master/US_guide.xml.gz",
+      "priority": 20,
+      "enabled": false
+    },
+    {
+      "name": "dp247 Freeview EPG - UK (backup, updates every 12h)",
+      "url": "https://raw.githubusercontent.com/dp247/Freeview-EPG/master/epg.xml",
+      "priority": 21,
+      "enabled": false
+    },
+    {
+      "name": "epg.pw - US",
+      "url": "https://epg.pw/xmltv/epg_US.xml.gz",
+      "priority": 22,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "epg.pw - UK (backup)",
+      "url": "https://epg.pw/xmltv/epg_GB.xml",
+      "priority": 23,
+      "enabled": false
+    },
+    {
+      "name": "EPG.best (requires account \u2014 paste your personal URL)",
+      "url": "https://epg.best/YOUR-PERSONAL-URL-HERE.xml",
+      "priority": 24,
+      "enabled": false
+    },
+    {
+      "name": "Open-EPG - US (10)",
+      "url": "https://www.open-epg.com/files/unitedstates10.xml",
+      "priority": 25,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "Open-EPG - US (11)",
+      "url": "https://www.open-epg.com/files/unitedstates11.xml",
+      "priority": 26,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "Open-EPG - US (3)",
+      "url": "https://www.open-epg.com/files/unitedstates3.xml",
+      "priority": 27,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    },
+    {
+      "name": "IPTV-EPG.org - US",
+      "url": "https://iptv-epg.org/files/epg-us.xml",
+      "priority": 28,
+      "enabled": true,
+      "prefer_for": ["*.us"]
+    }
+  ],
+  "master_skip_programme_channels": [
+    "hbo.*.us",
+    "showtime.*.us",
+    "starz.*.us",
+    "cinemax.*.us",
+    "moremax.*.us",
+    "actionmax.*.us",
+    "themaxx.*.us",
+    "outerplex.*.us"
+  ],
+  "channel_map": {
+    "_comment": "Map EPG channel IDs \u2192 your M3U tvg-id values so TiviMate can match them.",
+    "_usage": "Format: 'channel-id-from-epg-xml': 'tvg-id-in-your-m3u'",
+    "_step1": "Run the server and visit http://localhost:8080/channels to see all EPG channel IDs",
+    "_step2": "In TiviMate, find a channel with no EPG and note its tvg-id",
+    "_step3": "Add an entry here mapping the EPG id to your M3U tvg-id",
+    "_example": "\"ESPN\": \"ESPN HD\" means the EPG has id=ESPN but your M3U uses tvg-id=ESPN HD"
+  }
+}
