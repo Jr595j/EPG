@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Discover new EPG sources
+        run: python discover.py --config config.json
+
       - name: Patch MyBunny URL into config (from secret)
         if: env.MYBUNNY_EPG_URL != ''
         env:
@@ -68,6 +71,6 @@ jobs:
         run: |
           git config user.name "EPG Bot"
           git config user.email "epg-bot@users.noreply.github.com"
-          git add output/
+          git add output/ discovered_sources.json
           git diff --cached --quiet || git commit -m "Update EPG $(date -u +%Y-%m-%d)"
           git push

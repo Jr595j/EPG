@@ -647,6 +647,27 @@ def run_fetch() -> dict:
         key=lambda s: s.get("priority", 99),
     )
 
+    # Merge in auto-discovered sources
+    discovered_path = os.path.join(BASE_DIR, "discovered_sources.json")
+    if os.path.exists(discovered_path):
+        try:
+            with open(discovered_path, encoding="utf-8") as f:
+                disc = json.load(f)
+            disc_sources = [s for s in disc.get("sources", []) if s.get("enabled", True)]
+            # Avoid duplicates by URL
+            existing_urls = {s["url"] for s in sources}
+            added = 0
+            for ds in disc_sources:
+                if ds["url"] not in existing_urls:
+                    sources.append(ds)
+                    existing_urls.add(ds["url"])
+                    added += 1
+            if added:
+                sources.sort(key=lambda s: s.get("priority", 99))
+                logger.info(f"  Loaded {added} auto-discovered source(s)")
+        except Exception as exc:
+            logger.warning(f"  Could not load discovered sources: {exc}")
+
     logger.info(f"Fetching {len(sources)} source(s)...")
     sources_data = []
     errors = []
