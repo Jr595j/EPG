@@ -1,13 +1,11 @@
-# Example GitHub Actions workflow — run the fetcher daily and commit the result.
-# 
+# GitHub Actions workflow — fetch, merge, and publish EPG data daily.
+#
 # SETUP:
-#   1. Create a GitHub repo and push this project
-#   2. Go to repo Settings → Secrets and variables → Actions → New repository secret
-#   3. Add secret: MYBUNNY_EPG_URL = your full MyBunny EPG URL
-#      (e.g. https://epg.mybunny.tv/ipt/XXXXX/YYYYY/Default)
-#   4. Add secret: M3U_URL = your M3U playlist URL (optional, only for suggest-mappings)
-#   5. The action runs daily at 06:00 UTC (and on manual trigger)
-#   6. TiviMate EPG URLs (use either .xml or .xml.gz):
+#   1. Repo Settings → Secrets → New repository secret:
+#      MYBUNNY_EPG_URL = your full MyBunny EPG URL
+#   2. Repo Settings → Actions → General → Workflow permissions:
+#      Select "Read and write permissions" → Save
+#   3. TiviMate EPG URLs:
 #      Starlite: https://raw.githubusercontent.com/Jr595j/EPG/main/output/starlite.xml.gz
 #      MyBunny:  https://raw.githubusercontent.com/Jr595j/EPG/main/output/mybunny.xml.gz
 
@@ -15,13 +13,13 @@ name: Update EPG
 
 on:
   schedule:
-    # Run daily at 06:00 UTC — adjust to your preference
     - cron: '0 6 * * *'
-  workflow_dispatch:  # Allow manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   update-epg:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -33,21 +31,25 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Discover new EPG sources
+        continue-on-error: true
         run: python discover.py --config config.json
 
       - name: Patch MyBunny URL into config (from secret)
-        if: env.MYBUNNY_EPG_URL != ''
         env:
           MYBUNNY_EPG_URL: ${{ secrets.MYBUNNY_EPG_URL }}
         run: |
           python -c "
-          import json
+          import json, os
+          url = os.environ.get('MYBUNNY_EPG_URL', '')
+          if not url:
+              print('No MYBUNNY_EPG_URL secret set, skipping patch')
+              exit(0)
           for cfg in ['config.json', 'config_mybunny.json']:
               with open(cfg) as f: data = json.load(f)
               for s in data.get('sources', []):
                   if 'mybunny' in s.get('url', '').lower() or 'mybunny' in s.get('name', '').lower():
-                      import os
-                      s['url'] = os.environ['MYBUNNY_EPG_URL']
+                      s['url'] = url
+                      print(f'  Patched {s[\"name\"]} in {cfg}')
               with open(cfg, 'w') as f: json.dump(data, f, indent=2)
           "
 
@@ -55,15 +57,22 @@ jobs:
         run: python fetcher.py --config config.json
 
       - name: Fetch and merge EPG (MyBunny)
+        continue-on-error: true
         run: python fetcher.py --config config_mybunny.json
 
       - name: Copy outputs and create compressed versions
         run: |
           mkdir -p output
-          cp cache/merged.xml output/starlite.xml
-          gzip -9 -k output/starlite.xml
-          cp cache_mybunny/merged.xml output/mybunny.xml
-          gzip -9 -k output/mybunny.xml
+          if [ -f cache/merged.xml ]; then
+            cp cache/merged.xml output/starlite.xml
+            gzip -9 -k -f output/starlite.xml
+            echo "✓ starlite.xml"
+          fi
+          if [ -f cache_mybunny/merged.xml ]; then
+            cp cache_mybunny/merged.xml output/mybunny.xml
+            gzip -9 -k -f output/mybunny.xml
+            echo "✓ mybunny.xml"
+          fi
           echo "=== Output files ==="
           ls -lh output/
 
@@ -71,6 +80,7 @@ jobs:
         run: |
           git config user.name "EPG Bot"
           git config user.email "epg-bot@users.noreply.github.com"
-          git add output/ discovered_sources.json
+          git add output/
+          git add discovered_sources.json || true
           git diff --cached --quiet || git commit -m "Update EPG $(date -u +%Y-%m-%d)"
           git push
