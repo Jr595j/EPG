@@ -10,8 +10,8 @@
       "auto_discovered": true,
       "us_channels": 456,
       "total_channels": 456,
-      "last_probed": "2026-04-19T07:11:58.851038+00:00",
-      "freshness_hours": -40.80031921694444,
+      "last_probed": "2026-04-20T07:58:13.467054+00:00",
+      "freshness_hours": -40.02959255444445,
       "consecutive_failures": 0,
       "priority": 50
     },
@@ -25,8 +25,8 @@
       "auto_discovered": true,
       "us_channels": 153,
       "total_channels": 153,
-      "last_probed": "2026-04-19T07:12:00.418106+00:00",
-      "freshness_hours": -40.799883924999996,
+      "last_probed": "2026-04-20T07:58:14.680867+00:00",
+      "freshness_hours": -40.02925535194445,
       "consecutive_failures": 0,
       "priority": 51
     },
@@ -40,8 +40,8 @@
       "auto_discovered": true,
       "us_channels": 187,
       "total_channels": 187,
-      "last_probed": "2026-04-19T07:12:02.172457+00:00",
-      "freshness_hours": -40.799396605277785,
+      "last_probed": "2026-04-20T07:58:16.015299+00:00",
+      "freshness_hours": -40.028884676666664,
       "consecutive_failures": 0,
       "priority": 52
     },
@@ -55,8 +55,8 @@
       "auto_discovered": true,
       "us_channels": 297,
       "total_channels": 297,
-      "last_probed": "2026-04-19T07:12:03.732249+00:00",
-      "freshness_hours": -16.798963320555558,
+      "last_probed": "2026-04-20T07:58:17.168748+00:00",
+      "freshness_hours": -16.02856431611111,
       "consecutive_failures": 0,
       "priority": 53
     },
@@ -70,8 +70,8 @@
       "auto_discovered": true,
       "us_channels": 157,
       "total_channels": 157,
-      "last_probed": "2026-04-19T07:12:05.315548+00:00",
-      "freshness_hours": -40.79852349777778,
+      "last_probed": "2026-04-20T07:58:18.287530+00:00",
+      "freshness_hours": -40.02825350055556,
       "consecutive_failures": 0,
       "priority": 54
     },
@@ -83,15 +83,15 @@
         "*.us"
       ],
       "auto_discovered": true,
-      "us_channels": 146,
-      "total_channels": 146,
-      "last_probed": "2026-04-19T07:12:06.907080+00:00",
-      "freshness_hours": -16.798081421944445,
+      "us_channels": 194,
+      "total_channels": 194,
+      "last_probed": "2026-04-20T07:58:19.459212+00:00",
+      "freshness_hours": -40.027928080833334,
       "consecutive_failures": 0,
       "priority": 55
     }
   ],
-  "last_scan": "2026-04-19T07:12:10.836457+00:00",
+  "last_scan": "2026-04-20T07:58:23.463080+00:00",
   "scan_stats": {
     "candidates_found": 21,
     "probed": 21,
