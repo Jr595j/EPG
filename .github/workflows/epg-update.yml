@@ -63,15 +63,16 @@ jobs:
       - name: Copy outputs and create compressed versions
         run: |
           mkdir -p output
+          rm -f output/*.gz
           if [ -f cache/merged.xml ]; then
             cp cache/merged.xml output/starlite.xml
-            gzip -9 -k -f output/starlite.xml
-            echo "✓ starlite.xml"
+            gzip -9 -k output/starlite.xml
+            echo "✓ starlite.xml + .gz"
           fi
           if [ -f cache_mybunny/merged.xml ]; then
             cp cache_mybunny/merged.xml output/mybunny.xml
-            gzip -9 -k -f output/mybunny.xml
-            echo "✓ mybunny.xml"
+            gzip -9 -k output/mybunny.xml
+            echo "✓ mybunny.xml + .gz"
           fi
           echo "=== Output files ==="
           ls -lh output/
