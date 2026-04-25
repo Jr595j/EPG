@@ -81,4 +81,5 @@ jobs:
           git add output/
           git add discovered_sources.json || true
           git diff --cached --quiet || git commit -m "Update EPG $(date -u +%Y-%m-%d)"
+          git pull --rebase origin main || true
           git push
