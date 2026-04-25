@@ -78,11 +78,10 @@ jobs:
         run: |
           git config user.name "EPG Bot"
           git config user.email "epg-bot@users.noreply.github.com"
-          git add output/
-          git add discovered_sources.json || true
+          git add -A
           git diff --cached --quiet || git commit -m "Update EPG $(date -u +%Y-%m-%d)"
           git fetch origin main
-          git rebase origin/main || git rebase --abort
+          git rebase origin/main
           git push origin main
 
 
