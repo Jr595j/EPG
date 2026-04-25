@@ -81,9 +81,6 @@ jobs:
           git add output/
           git add discovered_sources.json || true
           git diff --cached --quiet || git commit -m "Update EPG $(date -u +%Y-%m-%d)"
-          # Pull any commits that landed while we were running, then push
-          for i in 1 2 3; do
-            git pull --rebase origin main && git push && break
-            echo "Push attempt $i failed, retrying..."
-            sleep 5
-          done
+          git fetch origin main
+          git rebase origin/main || git rebase --abort
+          git push origin main
