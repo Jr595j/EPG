@@ -1,6 +1,6 @@
 {
   "port": 8080,
-  "instance_name": "EPG Aggregator — Starlite",
+  "instance_name": "EPG Aggregator \u2014 Starlite",
   "refresh_interval_hours": 12,
   "keep_past_hours": 2,
   "m3u_url": "",
@@ -14,7 +14,7 @@
     },
     {
       "name": "MyBunny (your provider)",
-      "url": "https://epg.mybunny.tv/ipt/YOUR_ID/YOUR_KEY/Default",
+      "url": "https://epg.mybunny.tv/ipt/1945043/EdzdHLy2iu/Default",
       "priority": 2,
       "enabled": true
     },
@@ -89,7 +89,9 @@
       "url": "https://epgshare01.online/epgshare01/epg_ripper_US2.xml.gz",
       "priority": 14,
       "enabled": true,
-      "prefer_for": ["*.us"]
+      "prefer_for": [
+        "*.us"
+      ]
     },
     {
       "name": "EPGShare01 - UK",
@@ -102,14 +104,18 @@
       "url": "https://epgshare01.online/epgshare01/epg_ripper_US_SPORTS1.xml.gz",
       "priority": 16,
       "enabled": true,
-      "prefer_for": ["*.us"]
+      "prefer_for": [
+        "*.us"
+      ]
     },
     {
       "name": "EPGShare01 - US Locals",
       "url": "https://epgshare01.online/epgshare01/epg_ripper_US_LOCALS1.xml.gz",
       "priority": 17,
       "enabled": true,
-      "prefer_for": ["*.us"]
+      "prefer_for": [
+        "*.us"
+      ]
     },
     {
       "name": "EPGShare01 - Canada",
@@ -134,7 +140,9 @@
       "url": "https://epg.pw/xmltv/epg_US.xml.gz",
       "priority": 22,
       "enabled": true,
-      "prefer_for": ["*.us"]
+      "prefer_for": [
+        "*.us"
+      ]
     },
     {
       "name": "epg.pw - UK (backup)",
@@ -153,28 +161,36 @@
       "url": "https://www.open-epg.com/files/unitedstates10.xml",
       "priority": 25,
       "enabled": true,
-      "prefer_for": ["*.us"]
+      "prefer_for": [
+        "*.us"
+      ]
     },
     {
       "name": "Open-EPG - US (11)",
       "url": "https://www.open-epg.com/files/unitedstates11.xml",
       "priority": 26,
       "enabled": true,
-      "prefer_for": ["*.us"]
+      "prefer_for": [
+        "*.us"
+      ]
     },
     {
       "name": "Open-EPG - US (3)",
       "url": "https://www.open-epg.com/files/unitedstates3.xml",
       "priority": 27,
       "enabled": true,
-      "prefer_for": ["*.us"]
+      "prefer_for": [
+        "*.us"
+      ]
     },
     {
       "name": "IPTV-EPG.org - US",
       "url": "https://iptv-epg.org/files/epg-us.xml",
       "priority": 28,
       "enabled": true,
-      "prefer_for": ["*.us"]
+      "prefer_for": [
+        "*.us"
+      ]
     }
   ],
   "master_skip_programme_channels": [
