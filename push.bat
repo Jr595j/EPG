@@ -7,7 +7,7 @@ echo  Pushing changes to GitHub...
 echo ============================================================
 echo.
 
-git add .
+git add -u
 git status --short
 echo.
 

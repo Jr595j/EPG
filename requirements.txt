@@ -1,5 +1,6 @@
-flask>=3.0
-requests>=2.31
-apscheduler>=3.10
-rapidfuzz>=3.0
-openpyxl>=3.1
+flask~=3.1.0
+requests~=2.32.0
+apscheduler~=3.10.0
+rapidfuzz~=3.12.0
+openpyxl~=3.1.0
+defusedxml>=0.7

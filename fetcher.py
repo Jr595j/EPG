@@ -15,12 +15,26 @@ import logging
 import os
 import re
 from copy import deepcopy
-from datetime import datetime
-from xml.etree import ElementTree as ET
+from datetime import datetime, timedelta, timezone
+
+try:
+    from defusedxml.ElementTree import parse as _safe_parse, fromstring as _safe_fromstring
+    from xml.etree import ElementTree as ET
+    ET.parse = _safe_parse          # type: ignore[assignment]
+    ET.fromstring = _safe_fromstring  # type: ignore[assignment]
+except ImportError:
+    from xml.etree import ElementTree as ET
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 logger = logging.getLogger(__name__)
+
+_http_session = requests.Session()
+_retry = Retry(total=3, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504])
+_http_session.mount("https://", HTTPAdapter(max_retries=_retry))
+_http_session.mount("http://", HTTPAdapter(max_retries=_retry))
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CACHE_DIR = os.path.join(BASE_DIR, "cache")
@@ -29,6 +43,12 @@ CONFIG_PATH = os.path.join(BASE_DIR, "config.json")
 
 # Stored fetch result for the status page
 last_result: dict = {}
+
+
+def _get_display_name(ch_el) -> str:
+    """Extract display name from a channel element, or return empty string."""
+    name_el = ch_el.find("display-name")
+    return (name_el.text or "") if name_el is not None else ""
 
 
 def set_config_path(path: str):
@@ -47,15 +67,22 @@ def set_config_path(path: str):
 
 
 def load_config() -> dict:
-    with open(CONFIG_PATH, encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(CONFIG_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        logger.error(f"Config file not found: {CONFIG_PATH}")
+        raise SystemExit(f"Config file not found: {CONFIG_PATH}")
+    except json.JSONDecodeError as e:
+        logger.error(f"Invalid JSON in {CONFIG_PATH}: {e}")
+        raise SystemExit(f"Invalid JSON in {CONFIG_PATH}: {e}")
 
 
 def fetch_xml(source: dict) -> ET.Element:
     """Download a source URL and return a parsed XML root element."""
     url = source["url"]
     logger.info(f"  Fetching: {source['name']}")
-    resp = requests.get(url, timeout=60, headers={"User-Agent": "EPG-Aggregator/1.0"})
+    resp = _http_session.get(url, timeout=60, headers={"User-Agent": "EPG-Aggregator/1.0"})
     resp.raise_for_status()
 
     content = resp.content
@@ -95,13 +122,11 @@ def parse_xmltv_time(ts: str) -> datetime | None:
             sign = 1 if tz_part[0] != "-" else -1
             tz_str = tz_part.lstrip("+-")
             tz_h, tz_m = int(tz_str[:2]), int(tz_str[2:4]) if len(tz_str) >= 4 else 0
-            from datetime import timedelta, timezone as tz
             offset = timedelta(hours=tz_h, minutes=tz_m) * sign
-            return dt.replace(tzinfo=tz(offset)).astimezone(tz.utc)
+            return dt.replace(tzinfo=timezone(offset)).astimezone(timezone.utc)
         else:
             dt = datetime.strptime(ts[:14], "%Y%m%d%H%M%S")
-            from datetime import timezone as tz
-            return dt.replace(tzinfo=tz.utc)
+            return dt.replace(tzinfo=timezone.utc)
     except Exception:
         return None
 
@@ -111,8 +136,7 @@ def filter_past_programmes(merged: ET.Element, keep_past_hours: int = 2) -> int:
     Remove programme elements whose stop time is more than keep_past_hours ago.
     Returns the number of programmes removed.
     """
-    from datetime import timezone as tz, timedelta
-    cutoff = datetime.now(tz.utc) - timedelta(hours=keep_past_hours)
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=keep_past_hours)
     to_remove = []
     for prog in merged.findall("programme"):
         stop_ts = prog.get("stop", "") or prog.get("start", "")
@@ -206,7 +230,7 @@ def _normalize_nodirectional(name: str) -> str:
 # names like "FOX (KDFW) Dallas TX" or IDs like "fox.kdfw.dallas.tx.us".
 # ---------------------------------------------------------------------------
 
-_CALLSIGN_PAREN_RE = re.compile(r"\(([A-Z]{3,5}(?:DT\d?)?)\)")
+_CALLSIGN_PAREN_RE = re.compile(r"\(([KW][A-Z]{2,4}(?:DT\d?)?)\)")
 _CALLSIGN_ID_RE = re.compile(r"^[A-Z]{1,5}(?:DT\d*)?\.us$", re.IGNORECASE)
 
 
@@ -265,7 +289,7 @@ def merge_standard(sources_data: list, channel_map: dict) -> ET.Element:
     """
     merged = ET.Element("tv")
     merged.set("generator-info-name", "EPG-Aggregator")
-    merged.set("generated-ts", datetime.utcnow().isoformat())
+    merged.set("generated-ts", datetime.now(timezone.utc).isoformat())
 
     seen_channels: set = set()
     seen_programmes: set = set()
@@ -328,7 +352,7 @@ def merge_with_master(
 
     merged = ET.Element("tv")
     merged.set("generator-info-name", "EPG-Aggregator")
-    merged.set("generated-ts", datetime.utcnow().isoformat())
+    merged.set("generated-ts", datetime.now(timezone.utc).isoformat())
 
     # Build a reverse lookup: channel_map value → channel_map key
     # so we can also match secondary source IDs that happen to equal
@@ -683,7 +707,7 @@ def run_fetch() -> dict:
     if not sources_data:
         msg = "All EPG sources failed to fetch."
         logger.error(msg)
-        last_result = {"status": "error", "error": msg, "timestamp": datetime.utcnow().isoformat()}
+        last_result = {"status": "error", "error": msg, "timestamp": datetime.now(timezone.utc).isoformat()}
         return last_result
 
     skip_patterns = config.get("master_skip_programme_channels", [])
@@ -712,7 +736,7 @@ def run_fetch() -> dict:
 
     last_result = {
         "status": "ok",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "channels": channel_count,
         "programmes": programme_count,
         "sources_ok": len(sources_data),
@@ -727,7 +751,7 @@ def parse_m3u(url: str) -> list:
     Fetch and parse an M3U playlist URL.
     Returns a list of dicts: {name, tvg_id, tvg_name, group}
     """
-    resp = requests.get(url, timeout=30, headers={"User-Agent": "EPG-Aggregator/1.0"})
+    resp = _http_session.get(url, timeout=30, headers={"User-Agent": "EPG-Aggregator/1.0"})
     resp.raise_for_status()
     channels = []
     for line in resp.text.splitlines():

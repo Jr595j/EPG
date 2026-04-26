@@ -16,7 +16,15 @@ import io
 import logging
 import os
 from datetime import datetime, timezone
-from xml.etree import ElementTree as ET
+from html import escape
+
+try:
+    from defusedxml.ElementTree import parse as _safe_parse, fromstring as _safe_fromstring
+    from xml.etree import ElementTree as ET
+    ET.parse = _safe_parse          # type: ignore[assignment]
+    ET.fromstring = _safe_fromstring  # type: ignore[assignment]
+except ImportError:
+    from xml.etree import ElementTree as ET
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, jsonify, redirect, send_file, Response, request
@@ -82,7 +90,6 @@ def _page(title: str, body: str, wide: bool = False) -> str:
 def index():
     config = fetcher.load_config()
     r = fetcher.last_result
-    merged_exists = os.path.exists(fetcher.MERGED_PATH)
     instance_name = config.get("instance_name", "EPG Aggregator")
 
     # Status badge
@@ -109,7 +116,7 @@ def index():
 
     errors_html = ""
     for err in r.get("errors", []):
-        errors_html += f"<div class='err-box'>⚠ {err['source']}: {err['error']}</div>"
+        errors_html += f"<div class='err-box'>⚠ {escape(err['source'])}: {escape(err['error'])}</div>"
 
     # Sources table
     source_rows = ""
@@ -193,7 +200,7 @@ def channels_page():
         return _page("Channel IDs", "<div class='card'>EPG not yet generated. <a href='/refresh'>Refresh now</a>.</div>")
 
     rows = "".join(
-        f"<tr><td>{c['name']}</td><td><code>{c['id']}</code></td></tr>"
+        f"<tr><td>{escape(c['name'])}</td><td><code>{escape(c['id'])}</code></td></tr>"
         for c in channels
     )
 
@@ -253,7 +260,7 @@ def preview():
         matched_ids_set = set(matched_ids)
 
         if not matched_ids:
-            results_html = f"<div class='card' style='color:#f88'>No channels found matching <strong>{query}</strong>.</div>"
+            results_html = f"<div class='card' style='color:#f88'>No channels found matching <strong>{escape(query)}</strong>.</div>"
         else:
             # Collect programmes for matched channels
             ch_programmes = {ch_id: [] for ch_id in matched_ids}
@@ -262,7 +269,6 @@ def preview():
                 if ch_id not in matched_ids_set:
                     continue
                 start_raw = prog.get("start", "")
-                stop_raw  = prog.get("stop", "")
                 title_el  = prog.find("title")
                 desc_el   = prog.find("desc")
                 title = (title_el.text or "") if title_el is not None else ""
@@ -312,8 +318,8 @@ def preview():
                         prog_rows += (
                             f"<tr{row_style}>"
                             f"<td style='white-space:nowrap;color:#aab'>{p['start']}</td>"
-                            f"<td><strong>{p['title']}</strong></td>"
-                            f"<td style='color:#889;font-size:.85em'>{p['desc']}</td></tr>"
+                            f"<td><strong>{escape(p['title'])}</strong></td>"
+                            f"<td style='color:#889;font-size:.85em'>{escape(p['desc'])}</td></tr>"
                         )
                     if count > 48:
                         prog_rows += f"<tr><td colspan='3' style='color:#667'>… and {count - 48} more</td></tr>"
@@ -321,8 +327,8 @@ def preview():
                 results_html += f"""
                 <div class='card' style='margin-bottom:16px'>
                   <div style='margin-bottom:8px'>
-                    <strong style='color:#00d4ff'>{name}</strong> &nbsp;
-                    <code style='font-size:.8em'>{ch_id}</code> &nbsp;
+                    <strong style='color:#00d4ff'>{escape(name)}</strong> &nbsp;
+                    <code style='font-size:.8em'>{escape(ch_id)}</code> &nbsp;
                     {status_badge}
                   </div>
                   <table>
@@ -342,7 +348,7 @@ def preview():
         If data is missing here, the source isn't covering that channel.
       </p>
       <form method='get' action='/preview' style='display:flex;gap:8px'>
-        <input type='text' name='q' value='{query}' placeholder='Search channel name e.g. HBO, ESPN, CNN...' style='margin:0;flex:1'>
+        <input type='text' name='q' value='{escape(query)}' placeholder='Search channel name e.g. HBO, ESPN, CNN...' style='margin:0;flex:1'>
         <button type='submit' style='background:#00d4ff;color:#000;border:none;padding:8px 18px;border-radius:5px;font-weight:bold;cursor:pointer'>Search</button>
       </form>
     </div>
@@ -358,14 +364,16 @@ def guide():
         return _page("Channel Guide", "<div class='card'>EPG not yet generated. <a href='/refresh'>Refresh now</a>.</div>")
 
     from datetime import timedelta
-    from html import escape
 
     query = request.args.get("q", "").strip().lower()
     # Time window: default 4h starting from current half-hour
     now = datetime.now(timezone.utc)
     # Snap to previous half-hour
     grid_start = now.replace(minute=(now.minute // 30) * 30, second=0, microsecond=0)
-    hours = int(request.args.get("hours", 4))
+    try:
+        hours = int(request.args.get("hours", 4))
+    except (ValueError, TypeError):
+        hours = 4
     hours = max(1, min(hours, 24))
     grid_end = grid_start + timedelta(hours=hours)
 
@@ -729,7 +737,7 @@ def suggest_mappings():
 
     summary_rows = [
         ["EPG Mapping Analysis", ""],
-        ["Generated", datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")],
+        ["Generated", datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")],
         ["", ""],
         ["Total M3U channels",                              total],
         ["Exact Match  (already working in TiviMate)",      n_exact],

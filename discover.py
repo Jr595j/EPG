@@ -17,7 +17,14 @@ import os
 import re
 import time
 from datetime import datetime, timezone
-from xml.etree import ElementTree as ET
+
+try:
+    from defusedxml.ElementTree import parse as _safe_parse, fromstring as _safe_fromstring
+    from xml.etree import ElementTree as ET
+    ET.parse = _safe_parse          # type: ignore[assignment]
+    ET.fromstring = _safe_fromstring  # type: ignore[assignment]
+except ImportError:
+    from xml.etree import ElementTree as ET
 
 import requests
 

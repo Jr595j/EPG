@@ -26,6 +26,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -74,11 +75,36 @@ jobs:
           done
           ls -lh
 
+      - name: Validate output
+        run: |
+          python -c "
+          from xml.etree import ElementTree as ET
+          import sys
+          ok = True
+          for f in ['output/starlite.xml', 'output/mybunny.xml']:
+              try:
+                  root = ET.parse(f).getroot()
+                  ch = len(root.findall('channel'))
+                  pr = len(root.findall('programme'))
+                  print(f'{f}: {ch} channels, {pr} programmes')
+                  if ch < 10:
+                      print(f'  WARNING: very few channels in {f}')
+                      ok = False
+              except FileNotFoundError:
+                  print(f'{f}: not found (skipping)')
+              except Exception as e:
+                  print(f'{f}: parse error: {e}')
+                  ok = False
+          if not ok:
+              print('WARNING: output validation had issues but continuing')
+          "
+
       - name: Commit updated EPG
         run: |
           git config user.name "EPG Bot"
           git config user.email "epg-bot@users.noreply.github.com"
-          git add -A
+          git add output/
+          git add discovered_sources.json || true
           git diff --cached --quiet || git commit -m "Update EPG $(date -u +%Y-%m-%d)"
           git fetch origin main
           git rebase origin/main
