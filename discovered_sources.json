@@ -10,8 +10,8 @@
       "auto_discovered": true,
       "us_channels": 456,
       "total_channels": 456,
-      "last_probed": "2026-05-09T07:49:19.291816+00:00",
-      "freshness_hours": -40.17797457111111,
+      "last_probed": "2026-05-10T08:02:08.601134+00:00",
+      "freshness_hours": -39.96427753333333,
       "consecutive_failures": 0,
       "priority": 50
     },
@@ -25,8 +25,8 @@
       "auto_discovered": true,
       "us_channels": 153,
       "total_channels": 153,
-      "last_probed": "2026-05-09T07:49:20.895838+00:00",
-      "freshness_hours": -40.17752897416667,
+      "last_probed": "2026-05-10T08:02:09.585095+00:00",
+      "freshness_hours": -39.96400420444444,
       "consecutive_failures": 0,
       "priority": 51
     },
@@ -40,8 +40,8 @@
       "auto_discovered": true,
       "us_channels": 187,
       "total_channels": 187,
-      "last_probed": "2026-05-09T07:49:22.514695+00:00",
-      "freshness_hours": -40.17707930388889,
+      "last_probed": "2026-05-10T08:02:10.545147+00:00",
+      "freshness_hours": -39.96373751916666,
       "consecutive_failures": 0,
       "priority": 52
     },
@@ -55,8 +55,8 @@
       "auto_discovered": true,
       "us_channels": 297,
       "total_channels": 297,
-      "last_probed": "2026-05-09T07:49:24.208101+00:00",
-      "freshness_hours": -16.176608958888888,
+      "last_probed": "2026-05-10T08:02:11.608823+00:00",
+      "freshness_hours": -15.963442064999999,
       "consecutive_failures": 0,
       "priority": 53
     },
@@ -70,8 +70,8 @@
       "auto_discovered": true,
       "us_channels": 157,
       "total_channels": 157,
-      "last_probed": "2026-05-09T07:49:25.901259+00:00",
-      "freshness_hours": -40.17613862472223,
+      "last_probed": "2026-05-10T08:02:12.747462+00:00",
+      "freshness_hours": -39.963125742222225,
       "consecutive_failures": 0,
       "priority": 54
     },
@@ -83,15 +83,15 @@
         "*.us"
       ],
       "auto_discovered": true,
-      "us_channels": 193,
-      "total_channels": 193,
-      "last_probed": "2026-05-09T07:49:27.536731+00:00",
-      "freshness_hours": -16.17568433222222,
+      "us_channels": 190,
+      "total_channels": 190,
+      "last_probed": "2026-05-10T08:02:13.751277+00:00",
+      "freshness_hours": -39.96284692527778,
       "consecutive_failures": 0,
       "priority": 55
     }
   ],
-  "last_scan": "2026-05-09T07:49:31.616181+00:00",
+  "last_scan": "2026-05-10T08:02:16.133296+00:00",
   "scan_stats": {
     "candidates_found": 21,
     "probed": 21,
