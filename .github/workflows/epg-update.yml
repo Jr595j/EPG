@@ -61,49 +61,47 @@ jobs:
         continue-on-error: true
         run: python fetcher.py --config config_mybunny.json
 
-      - name: Copy outputs and create compressed versions
-        shell: bash
-        run: |
-          set -x
-          mkdir -p output
-          rm -f output/starlite.xml output/starlite.xml.gz output/mybunny.xml output/mybunny.xml.gz
-          cp cache/merged.xml output/starlite.xml || echo "No starlite cache"
-          cp cache_mybunny/merged.xml output/mybunny.xml || echo "No mybunny cache"
-          cd output
-          for f in *.xml; do
-            [ -f "$f" ] && gzip -9 -k "$f" && echo "✓ $f compressed"
-          done
-          ls -lh
-
       - name: Validate output
         run: |
           python -c "
           from xml.etree import ElementTree as ET
           import sys
           ok = True
-          for f in ['output/starlite.xml', 'output/mybunny.xml']:
+          for label, f in [('starlite', 'cache/merged.xml'), ('mybunny', 'cache_mybunny/merged.xml')]:
               try:
                   root = ET.parse(f).getroot()
                   ch = len(root.findall('channel'))
                   pr = len(root.findall('programme'))
-                  print(f'{f}: {ch} channels, {pr} programmes')
+                  print(f'{label}: {ch} channels, {pr} programmes')
                   if ch < 10:
-                      print(f'  WARNING: very few channels in {f}')
+                      print(f'  WARNING: very few channels in {label}')
                       ok = False
               except FileNotFoundError:
-                  print(f'{f}: not found (skipping)')
+                  print(f'{label}: not found (skipping)')
               except Exception as e:
-                  print(f'{f}: parse error: {e}')
+                  print(f'{label}: parse error: {e}')
                   ok = False
           if not ok:
               print('WARNING: output validation had issues but continuing')
           "
 
+      - name: Compress and publish only .gz files
+        shell: bash
+        run: |
+          mkdir -p output
+          rm -f output/starlite.xml.gz output/mybunny.xml.gz
+          # gzip -9 -f compresses and removes the source .xml
+          [ -f cache/merged.xml ] && gzip -9 -c cache/merged.xml > output/starlite.xml.gz && echo "✓ starlite.xml.gz"
+          [ -f cache_mybunny/merged.xml ] && gzip -9 -c cache_mybunny/merged.xml > output/mybunny.xml.gz && echo "✓ mybunny.xml.gz"
+          ls -lh output/
+
       - name: Commit updated EPG
         run: |
           git config user.name "EPG Bot"
           git config user.email "epg-bot@users.noreply.github.com"
-          git add output/
+          # Remove any tracked raw XML files (one-time cleanup)
+          git rm --cached output/*.xml 2>/dev/null || true
+          git add output/*.xml.gz
           git add discovered_sources.json || true
           git diff --cached --quiet || git commit -m "Update EPG $(date -u +%Y-%m-%d)"
           git fetch origin main

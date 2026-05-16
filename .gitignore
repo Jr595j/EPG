@@ -8,3 +8,6 @@ cache_mybunny/
 # Keep your local configs private — use config.local.json for personal URLs
 config.local.json
 config_mybunny.local.json
+
+# Only commit compressed .gz files — raw XMLs exceed GitHub's 100MB limit
+output/*.xml
