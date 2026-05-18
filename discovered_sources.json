@@ -10,8 +10,8 @@
       "auto_discovered": true,
       "us_channels": 456,
       "total_channels": 456,
-      "last_probed": "2026-05-17T08:14:11.118248+00:00",
-      "freshness_hours": -39.76357833555555,
+      "last_probed": "2026-05-18T09:51:22.259225+00:00",
+      "freshness_hours": -38.14381695472222,
       "consecutive_failures": 0,
       "priority": 50
     },
@@ -25,8 +25,8 @@
       "auto_discovered": true,
       "us_channels": 153,
       "total_channels": 153,
-      "last_probed": "2026-05-17T08:14:12.171720+00:00",
-      "freshness_hours": -39.763285715277775,
+      "last_probed": "2026-05-18T09:51:23.877976+00:00",
+      "freshness_hours": -38.143367266388886,
       "consecutive_failures": 0,
       "priority": 51
     },
@@ -40,8 +40,8 @@
       "auto_discovered": true,
       "us_channels": 187,
       "total_channels": 187,
-      "last_probed": "2026-05-17T08:14:13.209359+00:00",
-      "freshness_hours": -39.76299747361111,
+      "last_probed": "2026-05-18T09:51:25.577492+00:00",
+      "freshness_hours": -38.14289520583333,
       "consecutive_failures": 0,
       "priority": 52
     },
@@ -55,8 +55,8 @@
       "auto_discovered": true,
       "us_channels": 297,
       "total_channels": 297,
-      "last_probed": "2026-05-17T08:14:14.352760+00:00",
-      "freshness_hours": -15.762679854166667,
+      "last_probed": "2026-05-18T09:51:27.207088+00:00",
+      "freshness_hours": -38.14244256305555,
       "consecutive_failures": 0,
       "priority": 53
     },
@@ -70,8 +70,8 @@
       "auto_discovered": true,
       "us_channels": 157,
       "total_channels": 157,
-      "last_probed": "2026-05-17T08:14:15.413227+00:00",
-      "freshness_hours": -39.76238525666667,
+      "last_probed": "2026-05-18T09:51:29.001516+00:00",
+      "freshness_hours": -38.14194406194444,
       "consecutive_failures": 0,
       "priority": 54
     },
@@ -85,13 +85,13 @@
       "auto_discovered": true,
       "us_channels": 212,
       "total_channels": 212,
-      "last_probed": "2026-05-17T08:14:16.429777+00:00",
-      "freshness_hours": -39.76210290833333,
+      "last_probed": "2026-05-18T09:51:30.618452+00:00",
+      "freshness_hours": -38.14149495583333,
       "consecutive_failures": 0,
       "priority": 55
     }
   ],
-  "last_scan": "2026-05-17T08:14:19.114825+00:00",
+  "last_scan": "2026-05-18T09:51:35.369650+00:00",
   "scan_stats": {
     "candidates_found": 21,
     "probed": 21,
